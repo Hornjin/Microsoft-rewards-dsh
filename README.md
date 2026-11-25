@@ -44,32 +44,18 @@
 | 现代 Rewards 门户的 flyout 不再返回 `MobileSearch` 计数器，移动端搜索被永久跳过 | 配额未知时照常搜索，改用**余额增量**计分，停止条件为「连续 5 次无增长或 20 次搜索」 |
 | 签到推广常是 `hidden` / `give_eligible=false` 的旧推广，被判为运行失败 | 降级为警告并跳过——「今日无可签到额度」不等于失败 |
 
-## 前置要求
+## 环境要求
 
-只装三样，且都不在插件目录里：
-
-| 依赖 | 版本 | 为什么 | 怎么确认 |
-| --- | --- | --- | --- |
-| **DeepSeek Harness** | ≥ `0.1.7-rc.1` | 插件宿主，提供 `tools` / `webServer` / `settings` 服务 | DSH 里能跑 `plugin_manager` 就行 |
-| **Node.js** | **≥ 24**（上游 `engines` 硬性要求） | 脚本用 `node:sqlite` 内建模块存 Cookie（Node 22.5 才引入，且早期版本 API 不稳）；用 20 及以下会直接 `Cannot find module 'node:sqlite'` | `node -v` |
-| **Patchright Chromium** | revision **1228**（patchright 1.61.x 锁定） | 浏览器内核；不装会在 `chromium.launch()` 处失败 | 见下方「首次运行」 |
-
-**不需要**装的东西：
-
-- ❌ 不用 `npm install` —— 脚本内核与全部依赖（patchright、zod、fingerprint-generator 等）已预编译在 `runtime/` 里。
-- ❌ 不用单独开 Node 服务 —— 上游的 Control API 已换成插件内的 17 条 bridge 路由。
-- ❌ 不用装 Chrome / Edge —— 用的是 Patchright 自带的补丁版 Chromium（`browserChannel: "chromium"`）。
-- ❌ 不用装 Python / 编译工具 —— 唯一的原生模块 `impit-win32-x64-msvc` 已随仓库附带。
-- ⚠️ 手动登录 / 验证码接管需要**有图形界面**的 Windows 会话，纯无头服务器上只能自动登录。
-
-> **Node 24 是硬性门槛。** 插件会按「插件配置 `nodePath` → `$DSH_NODE_EXECUTABLE` → `process.execPath` → `PATH` → `%ProgramFiles%\nodejs`」的顺序找一个真正的 `node.exe`，**不会**用 DSH 自带的 Electron 运行时（它的 `process.execPath` 是 `DeepSeek Harness.exe`，跑不了这个脚本）。所以哪怕 DSH 是安装版，也必须单独装 Node。
+- **DeepSeek Harness** ≥ `0.1.7-rc.1`
+- **Node.js ≥ 24**（脚本 `engines` 要求；插件会自行定位 `node.exe`，不用它跑 Electron 内置运行时）
+- **Patchright Chromium**：首次使用需下载，见下方「首次运行」
 
 ## 安装
 
 插件通过 DSH 插件管理器安装（**不要**把目录直接丢进 `node_modules`）：
 
 ```bash
-git clone https://github.com/Hornjin/Microsoft-rewards-dsh.git
+git clone https://github.com/<your-account>/microsoft-rewards-dsh.git
 ```
 
 然后在 DSH 里：
@@ -80,29 +66,15 @@ plugin_manager  action=install_bundle  target=<仓库绝对路径>
 
 安装后入口 id 为 `include:microsoft-rewards`，工具前缀 `rewards_*`。
 
-> `runtime/` 是预编译好的脚本内核（含依赖，约 111 MB / 6258 个文件），已随仓库提交，clone 后即可直接安装，无需 `npm install`。
->
-> **仓库里没有任何账号数据**：`.env`、`config.json`、`sessions/`、`logs/`、`diagnostics/` 全在 `.gitignore` 里，模板文件用的是 `email@example.com` 之类的占位值。你的账号、密码、Cookie 只存在于本机数据目录。
+> `runtime/` 是预编译好的脚本内核（含依赖，约 111 MB / 6258 个文件）。如果不想让仓库这么大，可以把它排除在版本库外，改为随 Release 附带压缩包。
 
-### 首次运行：装 Chromium
+### 首次运行
 
 ```bash
-# 推荐：直接用插件自带的那份 patchright，版本必然对得上
-node "<插件目录>/runtime/node_modules/patchright/cli.js" install chromium
-
-# 或者用 npx（要确保解析到 1.61.x）
-npx patchright@1.61.1 install chromium
+npx patchright install chromium
 ```
 
-装完落在 `%LOCALAPPDATA%\ms-playwright\chromium-1228\`（约 415 MB）。校验一下：
-
-```bash
-node "<插件目录>/runtime/node_modules/patchright/cli.js" install --dry-run chromium
-```
-
-看到 `Install location: ...\chromium-1228` 就对了。
-
-**版本必须匹配。** 上游锁的是 patchright 1.61.1 → Chromium **revision 1228**。如果机器上只有 `chromium-1217`、`chromium-1234` 之类的其他版本（别的 Playwright 项目装的），脚本启动浏览器时会报找不到可执行文件。这时候补一条上面的命令即可，多个版本可以共存，互不影响。
+上游锁定的是 Chromium revision 1228（对应 patchright 1.61.x）。缓存里若只有别的版本，脚本会在启动浏览器时失败，补一条上面的命令即可。
 
 ## 快速上手
 
