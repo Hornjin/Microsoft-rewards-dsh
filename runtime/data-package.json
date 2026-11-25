@@ -1,0 +1,7 @@
+{
+  "name": "microsoft-rewards-data",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Runtime state for the Microsoft Rewards bot driven by the microsoft-rewards-dsh plugin. The bot resolves its project root from this file, so accounts, config, sessions and logs stay in this directory.",
+  "type": "commonjs"
+}

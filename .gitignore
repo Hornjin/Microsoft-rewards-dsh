@@ -1,0 +1,15 @@
+# Plugin's own deps (the vendored kernel under runtime/ ships its own copy)
+/node_modules/
+
+# Local runtime data — never commit accounts, cookies or logs
+.env
+config.json
+config/schedule.json
+sessions/
+logs/
+diagnostics/
+
+# Build/test scratch
+.tmp-*
+.DS_Store
+Thumbs.db

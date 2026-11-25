@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Microsoft Rewards",
+    "description": "Run and control the Microsoft Rewards automation script (V4-china) from DeepSeek Harness: multi-account runs, browser sessions, points, parsed logs, config, cron scheduling and a web panel.",
+    "detail": "Bundles the prebuilt Microsoft Rewards script (V4-china) and drives it from DeepSeek Harness. Agent tools: rewards_status, rewards_points, rewards_logs, rewards_errors, rewards_history, rewards_accounts, rewards_start, rewards_stop, rewards_restart, rewards_config, rewards_schedule, rewards_sessions, rewards_diagnostics. The web panel shows live state, manages accounts, edits config.json, arms the cron schedule and tails the parsed log. Everything is stored in one data directory (default <DSH_HOME>/microsoft-rewards) so the bot and the plugin agree on .env, config.json, sessions/, logs/ and diagnostics/."
+  }
+}

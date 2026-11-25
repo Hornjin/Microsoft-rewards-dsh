@@ -1,0 +1,9 @@
+{
+  "name": "microsoft-rewards-script",
+  "version": "4.3.5",
+  "private": true,
+  "description": "Vendored, prebuilt Microsoft Rewards automation script (V4-china) driven by the microsoft-rewards-dsh plugin.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "license": "GPL-3.0"
+}

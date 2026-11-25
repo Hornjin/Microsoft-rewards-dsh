@@ -1,0 +1,12 @@
+# Mounted by the profile composer when this bundle is installed.
+# The row id is also the settings namespace used by the web panel bridge.
+- insert:
+    - id: microsoft-rewards
+      name: microsoft-rewards-dsh
+      config:
+        dataDir: ''
+        nodePath: ''
+        logBufferSize: 2000
+        historySize: 20
+        stopTimeoutMs: 15000
+        schedulerEnabled: true

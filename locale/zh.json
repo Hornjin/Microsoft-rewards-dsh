@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "微软积分自动任务",
+    "description": "在 DeepSeek Harness 中运行并控制 Microsoft Rewards 自动脚本（V4-china）：多账号运行、浏览器会话、积分、解析后的日志、配置、定时计划与网页面板。",
+    "detail": "内置已编译的 Microsoft Rewards 脚本（V4-china），由 DeepSeek Harness 驱动。智能体工具：rewards_status、rewards_points、rewards_logs、rewards_errors、rewards_history、rewards_accounts、rewards_start、rewards_stop、rewards_restart、rewards_config、rewards_schedule、rewards_sessions、rewards_diagnostics。网页面板可查看实时状态、管理账号、编辑 config.json、启用定时计划并查看解析后的日志。所有状态集中在一个数据目录（默认 <DSH_HOME>/microsoft-rewards），脚本与插件对 .env、config.json、sessions/、logs/、diagnostics/ 的认知保持一致。"
+  }
+}
