@@ -55,7 +55,7 @@
 插件通过 DSH 插件管理器安装（**不要**把目录直接丢进 `node_modules`）：
 
 ```bash
-git clone https://github.com/<your-account>/microsoft-rewards-dsh.git
+git clone https://github.com/Hornjin/Microsoft-rewards-dsh.git
 ```
 
 然后在 DSH 里：
@@ -66,7 +66,9 @@ plugin_manager  action=install_bundle  target=<仓库绝对路径>
 
 安装后入口 id 为 `include:microsoft-rewards`，工具前缀 `rewards_*`。
 
-> `runtime/` 是预编译好的脚本内核（含依赖，约 111 MB / 6258 个文件）。如果不想让仓库这么大，可以把它排除在版本库外，改为随 Release 附带压缩包。
+> `runtime/` 是预编译好的脚本内核（含依赖，约 111 MB / 6258 个文件），已随仓库提交，clone 后即可直接安装，无需 `npm install`。
+>
+> **仓库里没有任何账号数据**：`.env`、`config.json`、`sessions/`、`logs/`、`diagnostics/` 全在 `.gitignore` 里，模板文件用的是 `email@example.com` 之类的占位值。你的账号、密码、Cookie 只存在于本机数据目录。
 
 ### 首次运行
 
