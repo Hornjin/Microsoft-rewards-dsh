@@ -51,7 +51,7 @@
 | 依赖 | 版本 | 为什么 | 怎么确认 |
 | --- | --- | --- | --- |
 | **DeepSeek Harness** | ≥ `0.1.7-rc.1` | 插件宿主，提供 `tools` / `webServer` / `settings` 服务 | DSH 里能跑 `plugin_manager` 就行 |
-| **Node.js** | **≥ 24**（必需，不是建议） | 脚本用了 `node:sqlite` 内建模块存 Cookie，Node 22 及以下直接 `Cannot find module 'node:sqlite'` | `node -v` |
+| **Node.js** | **≥ 24**（上游 `engines` 硬性要求） | 脚本用 `node:sqlite` 内建模块存 Cookie（Node 22.5 才引入，且早期版本 API 不稳）；用 20 及以下会直接 `Cannot find module 'node:sqlite'` | `node -v` |
 | **Patchright Chromium** | revision **1228**（patchright 1.61.x 锁定） | 浏览器内核；不装会在 `chromium.launch()` 处失败 | 见下方「首次运行」 |
 
 **不需要**装的东西：
