@@ -32,18 +32,6 @@
 - **诊断**：失败时抓取截图、页面 dump 与错误文本，可在面板里查看。
 - **人类化**：安静时段、搜索目标比例、随机滚动与点击、任务间随机延迟。
 
-### 相对上游的行为修正
-
-跑完整每日任务时踩到的几个坑，已在上游代码里修掉（`docs/DETAIL.md` 有完整说明）：
-
-| 问题 | 修正 |
-| --- | --- |
-| 桌面端会话从不落库，每次运行都要重新交互登录，失败即整段桌面阶段没有会话 | 桌面端无独立会话时用同一账号的移动端会话播种；**只借 cookie，指纹仍按桌面端重新生成** |
-| 手动登录开关对移动端、桌面端无差别生效，一次运行要人工登录两次，第二次必然超时 | 手动登录前先探测状态，已是 `LOGGED_IN` 就直接 `finalizeLogin`，不再阻塞 |
-| 桌面阶段失败会让 `Main()` 抛错，已赚积分在汇总里被记成 0 | 流程中断时用运行期余额快照回收已得积分，`ACCOUNT-END` 仍打印真实收益 |
-| 现代 Rewards 门户的 flyout 不再返回 `MobileSearch` 计数器，移动端搜索被永久跳过 | 配额未知时照常搜索，改用**余额增量**计分，停止条件为「连续 5 次无增长或 20 次搜索」 |
-| 签到推广常是 `hidden` / `give_eligible=false` 的旧推广，被判为运行失败 | 降级为警告并跳过——「今日无可签到额度」不等于失败 |
-
 ## 环境要求
 
 - **DeepSeek Harness** ≥ `0.1.7-rc.1`
@@ -74,7 +62,7 @@ plugin_manager  action=install_bundle  target=<仓库绝对路径>
 npx patchright install chromium
 ```
 
-上游锁定的是 Chromium revision 1228（对应 patchright 1.61.x）。缓存里若只有别的版本，脚本会在启动浏览器时失败，补一条上面的命令即可。
+上游锁定的是 Chromium revision 1228（对应 patchright 1.61.x）。
 
 ## 快速上手
 
@@ -114,14 +102,14 @@ rewards_status
 
 默认 `C:\Users\<you>\.dsh\microsoft-rewards`（插件配置里可改 `dataDir`）。目录里放的就是上游脚本的运行时文件：
 
-| 路径 | 内容 |
-| --- | --- |
-| `.env` | 账号（`ACCOUNT_<N>_*`） |
-| `config.json` | 脚本配置，字段与原版 `config.example.json` 完全一致 |
-| `config/schedule.json` | 定时计划 |
+| 路径                     | 内容                                       |
+| ---------------------- | ---------------------------------------- |
+| `.env`                 | 账号（`ACCOUNT_<N>_*`）                      |
+| `config.json`          | 脚本配置，字段与原版 `config.example.json` 完全一致    |
+| `config/schedule.json` | 定时计划                                     |
 | `sessions/sessions.db` | 登录态与指纹（SQLite，分 `mobile` / `desktop` 两行） |
-| `logs/` | 每日日志，按天滚动 |
-| `diagnostics/` | 失败诊断包 |
+| `logs/`                | 每日日志，按天滚动                                |
+| `diagnostics/`         | 失败诊断包                                    |
 
 脚本以该目录为 `cwd` 启动，所以它对 `package.json` / `.env` / `config.json` / `sessions/` / `logs/` 的定位与插件完全一致。
 
