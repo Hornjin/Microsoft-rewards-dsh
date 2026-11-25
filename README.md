@@ -94,7 +94,7 @@ node "<插件目录>/runtime/node_modules/patchright/cli.js" install chromium
 npx patchright@1.61.1 install chromium
 ```
 
-装完落在 `%LOCALAPPDATA%\ms-playwright\chromium-1228\`（约 300 MB）。校验一下：
+装完落在 `%LOCALAPPDATA%\ms-playwright\chromium-1228\`（约 415 MB）。校验一下：
 
 ```bash
 node "<插件目录>/runtime/node_modules/patchright/cli.js" install --dry-run chromium
