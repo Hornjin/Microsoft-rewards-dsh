@@ -1,6 +1,13 @@
-# Microsoft Rewards for DeepSeek Harness
+# Microsoft Rewards for DeepSeek Harness（自行安装前置版）
 
 把微软奖励（Microsoft Rewards）自动任务脚本打包成 **DeepSeek Harness (DSH) 插件**：脚本本体、控制接口、设置页与智能体工具全部内置，装上即用，不需要单独跑 Node 服务。
+
+> **这是 `manual-setup` 分支**：前置条件（Node.js 24 与 Patchright Chromium）需要你自己安装。
+> 想要插件帮你一键下载安装，请用 **`main` 分支**（一键部署版）：
+> ```bash
+> git clone -b main https://github.com/Hornjin/Microsoft-rewards-dsh.git
+> ```
+> 两个分支的自动化功能完全一致，只差前置条件的安装方式。
 
 > **上游仓库**：[**TheNetsky/Microsoft-Rewards-Script**](https://github.com/TheNetsky/Microsoft-Rewards-Script)
 > 本项目的自动化内核来自该仓库的 **v4 分支**，经 [chiihero/Microsoft-Rewards-Script](https://github.com/chiihero/Microsoft-Rewards-Script) 的 `V4-china` 分支做国内本地化（v4.3.5），再封装为 DSH 插件。
@@ -34,16 +41,23 @@
 
 ## 环境要求
 
-- **DeepSeek Harness** ≥ `0.1.7-rc.1`
-- **Node.js ≥ 24**（脚本 `engines` 要求；插件会自行定位 `node.exe`，不用它跑 Electron 内置运行时）
-- **Patchright Chromium**：首次使用需下载，见下方「首次运行」
+本版本**不提供**一键安装，请先自己装好这三样：
+
+| 依赖 | 要求 | 检查命令 |
+| --- | --- | --- |
+| DeepSeek Harness | ≥ `0.1.7-rc.1` | 见 DSH 版本页 |
+| Node.js | **≥ 24**（脚本 `engines` 要求，且 `node:sqlite` 从 22.5 才引入） | `node -v` |
+| Patchright Chromium | revision **1228**（patchright 1.61.x 锁定） | `npx patchright install --dry-run chromium` |
+
+- 插件会自行定位 `node.exe`，不用它跑 Electron 内置运行时；装 Node 时记得勾选「Add to PATH」，或把路径填进插件配置的 `nodePath`。
+- Chromium 默认装在全局缓存（Windows：`%LOCALAPPDATA%\ms-playwright\chromium-1228`）。装到别处的话，设置环境变量 `PLAYWRIGHT_BROWSERS_PATH` 指向那个目录。
 
 ## 安装
 
 插件通过 DSH 插件管理器安装（**不要**把目录直接丢进 `node_modules`）：
 
 ```bash
-git clone https://github.com/<your-account>/microsoft-rewards-dsh.git
+git clone -b manual-setup https://github.com/Hornjin/Microsoft-rewards-dsh.git
 ```
 
 然后在 DSH 里：
@@ -56,13 +70,20 @@ plugin_manager  action=install_bundle  target=<仓库绝对路径>
 
 > `runtime/` 是预编译好的脚本内核（含依赖，约 111 MB / 6258 个文件）。如果不想让仓库这么大，可以把它排除在版本库外，改为随 Release 附带压缩包。
 
-### 首次运行
+### 首次运行：安装 Chromium
 
 ```bash
 npx patchright install chromium
 ```
 
-上游锁定的是 Chromium revision 1228（对应 patchright 1.61.x）。
+如果网络受限，可以换镜像后再装：
+
+```bash
+set PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright
+npx patchright install chromium
+```
+
+装完用 `npx patchright install --dry-run chromium` 校验，看到 `chromium-1228` 且带 `INSTALLATION_COMPLETE` 标记即成功。
 
 ## 快速上手
 
